@@ -221,35 +221,35 @@ class Card implements NormalizableInterface, TimestampableInterface
         $normalized = [];
 
         $mandatoryFields = [
-                'code',
-                'title',
-                'stripped_title',
-                'position',
-                'uniqueness',
-                'deck_limit',
-                'quantity',
+            'code',
+            'title',
+            'stripped_title',
+            'position',
+            'uniqueness',
+            'deck_limit',
+            'quantity',
         ];
         if (substr($this->faction->getCode(), 0, 7) === 'neutral' && $this->type->getCode() !== 'identity') {
             $mandatoryFields[] = 'faction_cost';
         }
 
         $optionalFields = [
-                'illustrator',
-                'flavor',
-                'keywords',
-                'text',
-                'stripped_text',
-                'cost',
-                'faction_cost',
-                'trash_cost',
-                'image_url'
+            'illustrator',
+            'flavor',
+            'keywords',
+            'text',
+            'stripped_text',
+            'cost',
+            'faction_cost',
+            'trash_cost',
+            'image_url'
         ];
 
         $externalFields = [
-                'faction',
-                'pack',
-                'side',
-                'type'
+            'faction',
+            'pack',
+            'side',
+            'type'
         ];
 
         switch ($this->type->getCode()) {
@@ -308,7 +308,7 @@ class Card implements NormalizableInterface, TimestampableInterface
 
         foreach ($externalFields as $externalField) {
             $getter = $this->snakeToCamel('get_' . $externalField);
-            $normalized[$externalField.'_code'] = $this->$getter()->getCode();
+            $normalized[$externalField . '_code'] = $this->$getter()->getCode();
         }
 
         ksort($normalized);
@@ -1020,7 +1020,11 @@ class Card implements NormalizableInterface, TimestampableInterface
      */
     public function getTinyImagePath()
     {
-      return '/tiny/' . $this->code . '.jpg';
+        return array(
+            "webp" => '/tiny/' . $this->code . '.webp',
+            "jpg" => '/tiny/' . $this->code . '.jpg',
+            "png" => '/tiny/' . $this->code . '.png',
+        );
     }
 
     /**
@@ -1028,7 +1032,11 @@ class Card implements NormalizableInterface, TimestampableInterface
      */
     public function getSmallImagePath()
     {
-      return '/small/' . $this->code . '.jpg';
+        return array(
+            "webp" => '/small/' . $this->code . '.webp',
+            "jpg" => '/small/' . $this->code . '.jpg',
+            "png" => '/small/' . $this->code . '.png',
+        );
     }
 
     /**
@@ -1036,7 +1044,11 @@ class Card implements NormalizableInterface, TimestampableInterface
      */
     public function getMediumImagePath()
     {
-      return '/medium/' . $this->code . '.jpg';
+        return array(
+            "webp" => '/medium/' . $this->code . '.webp',
+            "jpg" => '/medium/' . $this->code . '.jpg',
+            "png" => '/medium/' . $this->code . '.png',
+        );
     }
 
     /**
@@ -1044,7 +1056,11 @@ class Card implements NormalizableInterface, TimestampableInterface
      */
     public function getLargeImagePath()
     {
-      return '/large/' . $this->code . '.jpg';
+        return array(
+            "webp" => '/large/' . $this->code . '.webp',
+            "jpg" => '/large/' . $this->code . '.jpg',
+            "png" => '/large/' . $this->code . '.png',
+        );
     }
 
     /**

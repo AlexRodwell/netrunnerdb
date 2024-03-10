@@ -12,7 +12,11 @@
     <div class="col-sm-4">
         <div class="card-image">
             {% if card.imageUrl %}
-            <img data-src="{{ card_image_url }}{{ asset(card.large_image_path) }}" alt="{{ card.title }}" class="img-responsive lazyload card-image" style="margin:auto">
+            <picture>
+                <source data-srcset="{{ card_image_url }}{{ asset(card.large_image_path) }}" media="(min-width: 768px)" type="image/webp">
+                <source data-srcset="{{ card_image_url }}{{ asset(card.large_image_path) }}" media="(max-width: 767px)" type="image/webp">
+                <img data-src="{{ card_image_url }}{{ asset(card.large_image_path) }}" alt="{{ card.title }}" class="img-responsive lazyload card-image" style="margin:auto">
+            </picture>
             {% else %}
             <div class="no-image" style="margin:auto"><div class="no-image-text">No image</div></div>
             {% endif %}
@@ -84,6 +88,7 @@
                 {% if card.text|length > 0 %}
                     <div class="card-text border-{{ card.faction_code }}">
                         {{ card.text|raw }}
+                        here???
                     </div>
                 {% endif %}
 
