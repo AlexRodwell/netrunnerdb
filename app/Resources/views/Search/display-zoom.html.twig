@@ -10,7 +10,6 @@
 {% block main %}
 {% include '/Scripts/api.html.twig' %}
 <script type="text/javascript">
-
     async function fetchAndDisplayPrintingsPronounsAndPronunciation() {
         const [printing, card_sets] = await Promise.all(
             [
@@ -46,30 +45,62 @@
                 }
             });
         } else if (printing.data.attributes.num_extra_faces > 1) {
-          // Make a list of face buttons for cards with more than 2 faces.
-          const container = document.getElementById('card_image_container');
-          const div = document.createElement('div');
-          container.appendChild(div);
-          // Create a button for each face.
-          const frontFaceButton = document.createElement('button');
+            // Make a list of face buttons for cards with more than 2 faces.
+            const container = document.getElementById('card_image_container');
+            const cardImageFlippable = document.querySelector('.card-image-flippable');
+
+            const div = document.createElement('div');
+            div.classList.add('card-image-flippable-buttons');
+            
+            container.appendChild(div);
+
+            // Create a button for each face.
+            const frontFaceButton = document.createElement('button');
             frontFaceButton.classList.add('btn');
-            frontFaceButton.classList.add('btn-secondary');
+            frontFaceButton.classList.add('btn-primary');
             div.appendChild(frontFaceButton);
             frontFaceButton.innerHTML = 'Front';
+            frontFaceButton.dataset.face = '0';
+
             frontFaceButton.addEventListener("click", function() {
                 const img = document.getElementById('current_card_img');
                 img.src = printing.data.attributes.images.nrdb_classic.large;
-            });
-            for (let i = 0; i < printing.data.attributes.num_extra_faces; i++) {
+                cardImageFlippable.dataset.flipped = 'false';
 
+                document.querySelectorAll('.card-image-flippable-buttons button').forEach(_button => {
+                    _button.classList.remove('btn-primary');
+                    _button.classList.add('btn-secondary');
+                });
+
+                frontFaceButton.classList.add('btn-primary');
+                frontFaceButton.classList.remove('btn-secondary');
+            });
+
+            for (let i = 0; i < printing.data.attributes.num_extra_faces; i++) {
                 const button = document.createElement('button');
                 button.classList.add('btn');
                 button.classList.add('btn-secondary');
+                button.dataset.face = i + 1;
+
                 div.appendChild(button);
                 button.innerHTML = `Face ${i+1}`;
+
                 button.addEventListener("click", function() {
-                    const img = document.getElementById('current_card_img');
+                    const img = document.getElementById('alternate_card_img');
                     img.src = printing.data.attributes.faces[i].images.nrdb_classic.large;
+
+                    document.querySelectorAll('.card-image-flippable-buttons button').forEach(_button => {
+                        _button.classList.remove('btn-primary');
+                        _button.classList.add('btn-secondary');
+                    });
+                    
+                    button.classList.add('btn-primary');
+                    button.classList.remove('btn-secondary');
+
+                    frontFaceButton.classList.remove('btn-primary');
+                    frontFaceButton.classList.add('btn-secondary');
+
+                    cardImageFlippable.dataset.flipped = 'true';
                 });
             }
         }
@@ -121,9 +152,16 @@
     <div class="col-sm-4">
         <div class="card-image" id="card_image_container">
             {% if card.imageUrl %}
-            <img id="current_card_img" data-src="{{ card_image_url }}{{ asset(card.large_image_path) }}" alt="{{ card.title }}" class="img-responsive lazyload card-image" style="margin:auto">
+                <div class="card-image-flippable" data-flipped="false">
+                    <div class="card-image card-image-flippable__front">
+                        <img id="current_card_img" data-src="{{ card_image_url }}{{ asset(card.large_image_path) }}" alt="{{ card.title }}" class="img-responsive lazyload card-image" style="margin:auto">
+                    </div>
+                    <div class="card-image card-image-flippable__back">
+                        <img id="alternate_card_img" src="https://card-images.netrunnerdb.com/v1/large/33094.jpg" class="img-responsive">
+                    </div>
+                </div>
             {% else %}
-            <div class="no-image" style="margin:auto"><div class="no-image-text">No image</div></div>
+                <div class="no-image" style="margin:auto"><div class="no-image-text">No image</div></div>
             {% endif %}
         </div>
     </div>
